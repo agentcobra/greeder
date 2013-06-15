@@ -54,23 +54,29 @@ function saveRenameFolder(element,folder){
 function renameFeed(element,feed){
 	var feedLine = $(element).parent().parent();
 	var feedNameCase = $('td:first a',feedLine);
+	var feedNameValue = feedNameCase.html();
+	var feedUrlCase = $('td:first span',feedLine);
+	var feedUrlValue = feedUrlCase.html();
 	var url = feedNameCase.attr('href');
-	var value = feedNameCase.html();
 	$(element).html('Enregistrer');
 	$(element).attr('onclick','saveRenameFeed(this,'+feed+',"'+url+'")');
-	feedNameCase.replaceWith('<input type="text" name="feedName" value="'+value+'"/>');
+	feedNameCase.replaceWith('<input type="text" name="feedName" value="'+feedNameValue+'" size="25" />');
+	feedUrlCase.replaceWith('<input type="text" name="feedUrl" value="'+feedUrlValue+'" size="25" />');
 }
 
 function saveRenameFeed(element,feed,url){
 	var feedLine = $(element).parent().parent();
-	var feedNameCase = $('td:first',feedLine);
-	var value = $('input',feedNameCase).val();
+	var feedNameCase = $('td:first input[name="feedName"]',feedLine);
+	var feedNameValue = feedNameCase.val();
+	var feedUrlCase = $('td:first input[name="feedUrl"]',feedLine);
+	var feedUrlValue = feedUrlCase.val();
 	$(element).html('Renommer');
 	$(element).attr('onclick','renameFeed(this,'+feed+')');
-	feedNameCase.replaceWith('<td style="width:75%;"><a href="'+url+'">'+value+'</a></td>');
+	feedNameCase.replaceWith('<a href="'+url+'">'+feedNameValue+'</a>');
+	feedUrlCase.replaceWith('<span class="underlink">'+feedUrlValue+'</span>');
 	$.ajax({
-				  url: "./action.php?action=renameFeed",
-				  data:{id:feed,name:value}
+		url: "./action.php?action=renameFeed",
+		data:{id:feed,name:feedNameValue,url:feedUrlValue}
 	});
 }
 
@@ -114,7 +120,7 @@ function readThis(element,id,from){
 function synchronize(code){
 	if(code!=''){
 	$('article').html('<section>'+
-	'<iframe class="importFrame" src="action.php?action=synchronize&format=html&code='+code+'" name="idFrameSynchro" id="idFrameSynchro" width="100%" height="400" ></iframe>'+
+	'<iframe class="importFrame" src="action.php?action=synchronize&amp;format=html&amp;code='+code+'" name="idFrameSynchro" id="idFrameSynchro" width="100%" height="400" ></iframe>'+
 	'</section>');
 	}else{
 		alert('Vous devez être connecté pour synchroniser vos flux');
